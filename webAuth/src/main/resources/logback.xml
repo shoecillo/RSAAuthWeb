@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration>
+
+    <!-- Log de traza general -->
+    <appender name="appfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- Nombre de fichero actual (Contiene log del dia actual) -->
+        <file>${catalina.home}/logs/Web-Auth.log</file>
+
+        <!-- Configuración de generación de historico  -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+		<fileNamePattern>${catalina.home}/logs/Web-Auth.log.%d</fileNamePattern>
+            <!-- Limitación tamaño máximo de fichero -->
+            <!-- <maxFileSize>50MB</maxFileSize> -->
+            <!-- Limpiza temporal de ficheros de log -->
+            <!-- <maxHistory>30</maxHistory> -->
+        </rollingPolicy>
+
+        <append>false</append>
+        <!-- PAtrón de formato -->
+        <encoder>
+            <Pattern>[%d{dd/MM/yyyy HH:mm:ss,SSS}] [%-5p] [%C.%M:%L] %m%n
+            </Pattern>
+        </encoder>
+    </appender>
+
+    <!-- Log de consola -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+      
+
+        <encoder>
+            <pattern>[%d{dd/MM/yyyy HH:mm:ss,SSS}] [%-5p] [%C.%M:%L] %m%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!-- Definición de tipos de log -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="appfile" />
+    </root>
+
+    <!-- Desactivacion de trazas de log para springframwork y apache -->
+    <logger name="org.springframework" level="ERROR" /> 
+    <logger name="org.apache.http" level="ERROR" /> 
+
+</configuration>

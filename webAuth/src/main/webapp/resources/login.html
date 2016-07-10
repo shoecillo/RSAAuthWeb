@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+	
+
+<title>RSA TEST</title>
+</head>
+ 	<body style="background-color: black;color: gray;">
+   		<div class="container-fluid">
+   			<div class="row" style="padding-top: 50px;">
+   				<div class="col-lg-offset-4 col-md-3 col-lg-2 text-center">
+   					<div class="row">
+		   				<div class="col-md-12 col-lg-12 text-center">
+		   					<button id="btOptionLogin" class="btn btn-primary">LOGIN APPLICATION</button>
+							<form action="/webAuth/j_spring_security_check" method="POST" class="form" style="padding-top: 30px;padding-bottom:30px;border: thin solid gray;border-radius: 4px;" id="frmLogin">
+								<div class="form-group">
+									<div class="input-group input-group-sm">
+				  						<span class="input-group-addon" style="background-color: #009DEF;">User Name:</span>
+				  						<input id="username" name="j_username" type="text" class="form-control" style="color: black;"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="input-group input-group-sm">
+				  						<span class="input-group-addon" style="background-color: #009DEF;">Password:</span>
+				  						<input id="password" name="j_password" type="password" class="form-control" style="color: black;"/>
+									</div>
+								</div>
+							<!--  
+						    	<label for="username">User Name:</label>
+						        <input id="username" name="j_username" type="text"/>
+						        <label for="password">Password:</label>
+						        <input id="password" name="j_password" type="password"/>
+						   -->
+						        <input type="submit" value="Log In" class="btn btn-primary"/>
+						    </form>
+						    <div id="msgLogin"></div>
+					    </div>
+					</div>
+   				</div>
+   				<div class="col-md-3 col-lg-2 text-center">
+   					<button id="btOptionRegister" class="btn btn-primary">CREATE NEW USER</button>
+   					<form class="form" style="padding-top: 30px;padding-bottom:30px;border: thin solid gray;border-radius: 4px;" id="frmRegister">
+   						<div class="form-group">
+							<div class="input-group input-group-sm">
+								<span class="input-group-addon" style="background-color: #009DEF;">User Name:</span>
+								<input id="txtUsr" type="text" class="form-control" style="color: black;"/>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="input-group input-group-sm">
+								<span class="input-group-addon" style="background-color: #009DEF;">Password:</span>
+								<input id="txtPwd" type="password" class="form-control" style="color: black;"/>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="input-group input-group-sm">
+								<span class="input-group-addon" style="background-color: #009DEF;">Repeat Password:</span>
+								<input id="txtRepeat" type="password" class="form-control" style="color: black;"/>
+							</div>
+						</div>
+						<input id="btRegister" type="button" value="Register" class="btn btn-primary"/>
+					</form>
+					<div id="msgSignIn"></div>
+   				</div>
+   			</div>
+   			
+		</div>
+		
+		<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+		
+		<script type="text/javascript">
+			
+			
+			var $_authToken = "";	
+			var _error = window.location.search;
+			if(_error !== "")
+			{
+				$("#frmRegister").hide();
+				$("#frmLogin").fadeIn(500);
+				$("#msgLogin").html("User or password incorrect.Please Try again.");
+				setTimeout(function()
+				{
+					$("#msgLogin").html("");	
+				}, 
+				5000);
+			}
+			else
+			{
+				$("#frmRegister").hide();
+				$("#frmLogin").hide();
+			}
+
+			$("#btOptionLogin").click(function()
+			{
+				$("#frmRegister").hide();
+				$("#frmLogin").fadeIn(500);
+			});
+			
+			$("#btOptionRegister").click(function()
+			{
+				$("#frmLogin").hide();
+				$("#frmRegister").fadeIn(500);
+			});
+			
+			$("#btRegister").click(function()
+			{
+					var dto = {};
+					if($("#txtRepeat").val() === $("#txtPwd").val())
+					{
+						dto.usr = $("#txtUsr").val();
+						dto.pwd = $("#txtPwd").val();
+						
+						var vUrl = window.location.pathname.split('/');
+					    var vDomain = vUrl[1];
+						    var url =  "/" + vDomain + "/public/generate"; 
+						
+						$.ajax({
+					        async : true,
+					        cache : false,
+					        url : url,
+					        type : "POST",
+					        data : JSON.stringify(dto),
+					        headers : {
+					      
+					            'Content-Type' : 'application/json; charset=utf-8'
+					        },
+					        success : function(data, textStatus, request) 
+					        {
+					        	$_authToken = request.getResponseHeader('AUTH-SH-TOKEN');
+					        	console.log($_authToken);
+					        	
+					        	$("#frmRegister").hide();
+								$("#frmLogin").fadeIn(500);
+					        	
+					        	$("#msgSignIn").html("User "+$("#txtUsr").val()+" registred");
+								setTimeout(function()
+								{
+									$("#msgSignIn").html("");	
+								}, 
+								4000);
+					        	
+					        },
+					        error : function(request, type, errorThrown) {
+					        	console.log(request);
+					        	if(request.status === 417)
+					        		$("#msgSignIn").html("User Exist in the system");
+					        	else
+					        		$("#msgSignIn").html("Error creating user");
+								setTimeout(function()
+								{
+									$("#msgSignIn").html("");	
+								}, 
+								2000);
+					        }
+					    });
+					}
+					else
+					{
+						$("#msgSignIn").html("Passwords not matches");
+						setTimeout(function()
+						{
+							$("#msgSignIn").html("");	
+						}, 
+						2000);
+					}
+					
+			});
+	
+		</script>
+    </body>
+</html>

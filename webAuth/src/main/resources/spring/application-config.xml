@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      	xmlns:p="http://www.springframework.org/schema/p"
+       	xmlns:context="http://www.springframework.org/schema/context"
+       	xmlns:mvc="http://www.springframework.org/schema/mvc"
+       	xmlns:oxm="http://www.springframework.org/schema/oxm"
+	    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                            http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/context 
+                            http://www.springframework.org/schema/context/spring-context.xsd
+                            http://www.springframework.org/schema/mvc
+                            http://www.springframework.org/schema/mvc/spring-mvc.xsd
+                            http://www.springframework.org/schema/oxm  
+                            http://www.springframework.org/schema/oxm/spring-oxm-1.5.xsd">
+            
+     <context:component-scan base-package="com.sh.app"/>
+         <mvc:annotation-driven />
+       	 <mvc:resources mapping="/resources/**" location="/resources/" />
+        
+       	 <context:property-placeholder location="classpath:application.properties" />
+         
+         <bean id="htmlViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	        <!-- Example: a logical view name of 'showMessage' is mapped to '/WEB-INF/jsp/showMessage.jsp' -->
+	        <property name="prefix" value="/resources/"/>
+	        <property name="suffix" value=".html"/>
+		</bean>
+		
+		<bean name="ConfigAuth" class="com.sh.app.service.ConfigAuth">
+			<constructor-arg name="usr" value=""></constructor-arg>
+			<constructor-arg name="pwd"	value=""></constructor-arg>
+			<constructor-arg name="privateKeyStore" value="${keystore.private}"></constructor-arg>
+			<constructor-arg name="publicKeyStore" value="${keystore.public}"></constructor-arg>
+			<constructor-arg name="dataKeyStore" value="${keystore.data}"></constructor-arg>
+			<constructor-arg name="mode" value="FILE"></constructor-arg> 
+		</bean>
+		
+		<bean name="AuthFilter" class="com.sh.app.filters.AuthFilter"></bean>
+		
+  <!--  
+    <bean id="shUserDetailsService" class="com.sh.service.ShUserDetailsService">
+	</bean>
+   
+         	 
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<property name="jdbcUrl" value="${bd.url}" />
+		<property name="user" value="${bd.user}" />
+		<property name="password" value="${bd.pwd}" />
+
+		<property name="acquireIncrement" value="5" />
+		<property name="idleConnectionTestPeriod" value="1800" />
+		<property name="maxPoolSize" value="600" />
+		<property name="maxStatements" value="50" />
+		<property name="minPoolSize" value="5" />
+		<property name="maxIdleTime" value="1800" />
+	</bean>
+ -->
+  
+<!-- 	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="${datasource.jndiName}"></property>
+	</bean> 
+-->
+
+	<!-- 
+	<bean id="sessionFactory" name="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+
+            <property name="dataSource">
+                  <ref bean="dataSource" />
+            </property>
+
+			<property name="packagesToScan" value="com.sh.entity" />
+			
+            <property name="hibernateProperties">
+                  <props>
+                        <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                        <prop key="hibernate.show_sql">true</prop>
+                        <prop key="hibernate.current_session_context_class">thread</prop>
+                                                
+				    	<prop key="hibernate.bytecode.use_reflection_optimizer">false</prop>
+						<prop key="hibernate.connection.driver_class">com.mysql.jdbc.Driver</prop>
+						<prop key="hibernate.default_catalog">${bd.schema}</prop>
+        				<prop key="hibernate.format_sql">true</prop>
+        				<prop key="hibernate.search.autoregister_listeners">false</prop>
+        				<prop key="hibernate.use_sql_comments">true</prop>
+        				<prop key="hibernate.enable_lazy_load_no_trans">true</prop>
+        				<prop key="hibernate.auto_close_session">true</prop>
+        				<prop key="hibernate.validator.apply_to_ddl">false</prop>
+                  </props>
+            </property>
+      </bean>
+
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+      <property name="sessionFactory" ref="sessionFactory" />
+   </bean>
+ 
+   <bean id="persistenceExceptionTranslationPostProcessor" class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+   
+   
+   
+   -->
+   <import resource="appSecurity.xml" />
+</beans>

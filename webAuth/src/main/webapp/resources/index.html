@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RSA TEST - PRIVATE ZONE</title>
+<link href="resources/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body style="background-color: black;color: gray;">
+	<div class="container">
+	<div class="row">
+		<div class="-col-md-8 col-lg-8"><h2>WELCOME TO PRIVATE ZONE</h2></div>
+		<div class="-col-md-4 col-lg-4" style="padding-top: 20px;"><button id="btLogout" class="btn btn-primary">LogOut</button></div>
+	</div>
+	<div class="row">
+		<div class="row">
+			<div class="-col-md-12 col-lg-12">
+				<input id="btGenerateKey" type="button" value="Generate Api Key" class="btn btn-primary"/>
+				<span id="msgGen" style="padding-left: 20px;font-size: x-large;color: #DEB887"></span>
+				<div class="form-group" style="padding-top: 20px;">
+					<div class="input-group input-group-sm">
+						<span class="input-group-addon" style="background-color: #009DEF;">Api Key:</span>
+						<textarea readonly="readonly" id="txtKey" rows="8" style="color: black;width: 100%;"></textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+</body>
+<script type="text/javascript" src="resources/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="resources/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+	
+	$(".form-group").hide();
+
+	function getKey()
+	{
+			var dto = {};
+			dto.usr = $("#txtUsr").val();
+			dto.pwd = $("#txtPwd").val();
+			
+			var vUrl = window.location.pathname.split('/');
+		    var vDomain = vUrl[1];
+		    var url =  "/" + vDomain + "/getKey"; 
+			$.ajax({
+		        async : true,
+		        cache : false,
+		        url : url,
+		        type : "POST",
+		        headers : {
+		      
+		            'Content-Type' : 'application/json; charset=utf-8'
+		        },
+		        success : function(data, textStatus, request) 
+		        {
+		        	//$_authToken = request.getResponseHeader('AUTH-SH-TOKEN');
+		        	console.log(data);
+		        	$("#txtKey").val(data.key);
+		        	$(".form-group").fadeIn(500);
+		        	$("#msgGen").html("key generated for user &lt;"+data.user+"&gt;" )
+		        	
+		        },
+		        error : function(request, type, errorThrown) {
+		            // vacio
+		        }
+		    });			
+	}
+	$("#btGenerateKey").click(function()
+	{
+		getKey();
+	});
+	
+	$("#btLogout").click(function()
+	{
+		var vUrl = window.location.pathname.split('/');
+	    var vDomain = vUrl[1];
+	    var url =  "/" + vDomain + "/logout"; 
+		$.ajax({
+	        async : true,
+	        cache : false,
+	        url : url,
+	        type : "POST",
+	        headers : {
+	      
+	            'Content-Type' : 'application/json; charset=utf-8'
+	        },
+	        success : function(data, textStatus, request) 
+	        {
+	        	window.location.assign("/"+vDomain+"/resources/login.html");
+	        },
+	        error : function(request, type, errorThrown) {
+	         
+	        }
+	    });
+	});
+	
+</script>
+
+
+
+</html>
